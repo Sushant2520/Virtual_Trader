@@ -4,10 +4,13 @@
 > Built as a training/demo platform (NOT for real money).
 
 ![Platform Screenshot](./assets/virtual-trader-screenshot.png)
+<img width="1070" height="844" alt="Screenshot 2025-09-24 121553" src="https://github.com/user-attachments/assets/2e4b01ce-6e93-4417-9383-745b249ce575" />
+
 
 ---
 
-## Table of contents
+## Table of contents![Uploading Screenshot 2025-09-24 121553.png…]()
+
 - [Project overview](#project-overview)  
 - [Features](#features)  
 - [Tech stack](#tech-stack)  
