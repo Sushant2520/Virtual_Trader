@@ -1,0 +1,8 @@
+const express = require('express'); const router = express.Router();
+const Trade = require('../models/Trade'); const User = require('../models/User');
+const { v4:uuidv4 } = require('uuid'); const { getQuote } = require('./market');
+const jwt = require('jsonwebtoken'); const JWT_SECRET = process.env.JWT_SECRET || 'devsecret';
+function auth(req,res,next){ const h=req.headers.authorization; if(!h) return res.status(401).json({message:'no token'}); const token = h.split(' ')[1]; try{ const p = jwt.verify(token, JWT_SECRET); req.userId = p.id; next(); }catch(e){ return res.status(401).json({message:'invalid token'}); } }
+router.post('/execute', auth, async (req,res)=>{ const {symbol,side,quantity} = req.body; if(!symbol||!side) return res.status(400).json({message:'symbol/side required'}); const qty = Number(quantity)||1; const price = await getQuote(symbol); if(!price) return res.status(400).json({message:'price unavailable'}); const user = await User.findById(req.userId); if(!user) return res.status(404).json({message:'user not found'}); const notional = price*qty; if(side==='buy' && user.balance < notional) return res.status(400).json({message:'insufficient balance'}); user.balance = side==='buy' ? user.balance - notional : user.balance + notional; await user.save(); const trade = await Trade.create({tradeId:uuidv4(),userId:user._id,symbol,side,price,quantity:qty,notional,status:'closed'}); res.json({executed:true,trade,balance:user.balance}); });
+router.get('/history', auth, async (req,res)=>{ const trades = await Trade.find({userId:req.userId}).sort({createdAt:-1}); res.json({trades}); });
+module.exports = router;

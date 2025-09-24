@@ -1,0 +1,14 @@
+require('dotenv').config();
+const express = require('express');
+const cors = require('cors');
+const connectDB = require('./lib/db');
+const app = express();
+app.use(cors());
+app.use(express.json());
+app.get('/api/health', (req, res) => res.json({status:'ok'}));
+app.use('/api/auth', require('./routes/auth'));
+app.use('/api/trades', require('./routes/trades'));
+app.use('/api/market', require('./routes/market'));
+app.use('/api/admin', require('./routes/admin'));
+const PORT = process.env.PORT || 4000;
+connectDB().then(()=>{ app.listen(PORT, ()=> console.log('Server running on', PORT)); }).catch(err=>{ console.error('DB connect error', err); });

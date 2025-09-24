@@ -1,0 +1,5 @@
+const express = require('express'); const router = express.Router(); const User = require('../models/User'); const jwt = require('jsonwebtoken'); const JWT_SECRET = process.env.JWT_SECRET || 'devsecret';
+function auth(req,res,next){ const h=req.headers.authorization; if(!h) return res.status(401).json({message:'no token'}); const token = h.split(' ')[1]; try{ req.user = jwt.verify(token, JWT_SECRET); next(); }catch(e){ return res.status(401).json({message:'invalid token'}); } }
+router.get('/users', auth, async (req,res)=>{ const p = req.user; const u = await User.findById(p.id); if(!u || u.role!=='admin') return res.status(403).json({message:'forbidden'}); const users = await User.find().select('-passwordHash'); res.json({users}); });
+router.post('/users/:id/reset', auth, async (req,res)=>{ const p=req.user; const u=await User.findById(p.id); if(!u||u.role!=='admin') return res.status(403).json({message:'forbidden'}); const target=await User.findById(req.params.id); if(!target) return res.status(404).json({message:'not found'}); target.balance = req.body.balance||10000; await target.save(); res.json({user:target}); });
+module.exports = router;
