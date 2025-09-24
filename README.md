@@ -3,7 +3,7 @@
 > Practice trading with virtual currency — simulated market prices, instant execution, and a simple dashboard for learning and testing strategies.  
 > Built as a training/demo platform (NOT for real money).
 
-![Platform Screenshot](./assets/virtual-trader-screenshot.png)
+![Platform Screenshot]("C:\Users\HP\OneDrive\Pictures\Screenshots\Screenshot 2025-09-24 121553.png")
 
 ---
 
